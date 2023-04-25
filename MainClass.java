@@ -9,13 +9,13 @@ public class MainClass{
 		
         public static void main(String[] args) {
                 
-        		new MainClass();
-        		new GraphicsSystem();
+        	new MainClass();
+        	new GraphicsSystem();
         }
 
         public MainClass() {
                 
-        		JFrame MainFrame = new JFrame("LBU Graphics Application");                
+        	JFrame MainFrame = new JFrame("LBU Graphics Application");                
                 MainFrame.setLayout(new FlowLayout()); 
                 MainFrame.add(gfx);                                    
                 MainFrame.pack();                                               
