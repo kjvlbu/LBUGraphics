@@ -30,25 +30,7 @@ public class GraphicsSystem extends LBUGraphics {
     	setPenColour(Color.red);
     	
     }
-	
-	public void setStroke() {
-		
-		super.setStroke(WIDTH);
-		penDown();
-	}
-	
-	public void setTurtleSpeed() {
-		
-		super.setTurtleSpeed(turtleSpeed);
-		penDown();
-	}
-	
-	public void circle() {
-		
-		super.circle(ABORT);
-		penDown();
-	}
-	
+
     public void processCommand(String input) {
     	
     	String[] inputtedArray = input.split(" ");
@@ -288,16 +270,32 @@ public class GraphicsSystem extends LBUGraphics {
     	if(command.equals("save")) {
     		 try {
     			BufferedImage buffImg = getBufferedImage();
-    			File output = new File("LBU_Graphics_Image" + ".png");
-    			ImageIO.write(buffImg, "png", output);
+    			File fileOutput = new File("LBU_Graphics_Image" + ".png");
+    			ImageIO.write(buffImg, "png", fileOutput);
     			displayMessage("Image successfully saved");
     			
     			validCommand = true;
     		} catch(IOException e) {
+    			
     			displayMessage("Error whilst saving image");
     			return;
     		}
-    	} 
+    	}
+    	
+    	if(command.equals("load")) {
+    		try {
+    			File fileInput = new File("LBU_Graphics_Image" + ".png");
+    			BufferedImage buffImg = ImageIO.read(fileInput);
+    			setBufferedImage(buffImg);
+    			displayMessage("Image successfully loaded");
+    			
+    			validCommand = true;
+    		} catch(IOException e) {
+    			
+    			displayMessage("Error loading image");
+    			return;
+    		}
+    	}
   
     	if(validCommand == false) {
     		
