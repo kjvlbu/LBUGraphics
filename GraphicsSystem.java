@@ -1,21 +1,55 @@
 package oop;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 import uk.ac.leedsbeckett.oop.LBUGraphics;
 
-public class GraphicsSystem extends LBUGraphics {
 
+public class GraphicsSystem extends LBUGraphics {
+	
 	Shape shapes = new Shape();
+
+	public void about() {
+		
+		super.about();
+		
+		Graphics2D graphicGFX = getGraphics2DContext();
+		graphicGFX.drawString("Kaven", 25, 25);
+		
+	}
 	
 	public void reset() {
     	
     	super.reset();
     	penDown();
-    }
-    
-    public void processCommand(String input) {
+    	setPenColour(Color.red);
     	
-    	penDown();
+    }
+	
+	public void setStroke() {
+		
+		super.setStroke(WIDTH);
+		penDown();
+	}
+	
+	public void setTurtleSpeed() {
+		
+		super.setTurtleSpeed(turtleSpeed);
+		penDown();
+	}
+	
+	public void circle() {
+		
+		super.circle(ABORT);
+		penDown();
+	}
+	
+    public void processCommand(String input) {
     	
     	String[] inputtedArray = input.split(" ");
     	String command = inputtedArray[0].toLowerCase();
@@ -26,7 +60,7 @@ public class GraphicsSystem extends LBUGraphics {
     	
     	if(cmdLength == 0) return;
     	
-    	 if (cmdLength > 1) {
+    	if (cmdLength > 1) {
 			
     		posVal = inputtedArray[1];
 			try {
@@ -34,21 +68,29 @@ public class GraphicsSystem extends LBUGraphics {
 				value = Integer.parseInt(inputtedArray[1]);
 			
 			} catch (NumberFormatException e) {
-			
-				displayMessage("Please enter a valid numeric parameter.");
+				
 				value = 0;
-	
+				displayMessage("Please enter a valid numeric parameter.");
+				return;
+				
 			}
 		} else {
 			
 			posVal = null;
 			value = 0;	
-
-		}
+		} 
+    	 
+    	if (value < 0) {
+    		displayMessage("Negative numbers aren't valid, please enter a positive integer");
+    		return;
+    	}
+    	
+    	if (value > 250) {
+    		displayMessage("Number too big, please use a sensible amount");
+    		return;
+    	}
     	
     	System.out.println("User calls "+command);
-    	
-    	// --- Turtle moves FORWARD
     	
     	if(command.equals("forward") && cmdLength == 1) {
     		
@@ -75,10 +117,8 @@ public class GraphicsSystem extends LBUGraphics {
     		forward(-value);
     		validCommand = true;
     		
-    		displayMessage("Turtle moves backwards "+posVal+"number of pixels");
+    		displayMessage("Turtle moves backwards "+posVal+" number of pixels");
     	}
-    	
-    	// --- Turtle turns LEFT
     	
     	if(command.equals("left") && cmdLength == 1) {
     		
@@ -94,8 +134,6 @@ public class GraphicsSystem extends LBUGraphics {
     		displayMessage("Turtle turns left by "+posVal+" degrees");
     	}
     	
-    	// --- Turtle turns RIGHT
-    	
     	if(command.equals("right") && cmdLength == 1) {
     		
     		turnRight();
@@ -110,7 +148,28 @@ public class GraphicsSystem extends LBUGraphics {
     		displayMessage("Turtle turns right by "+posVal+" degrees");
     	}
     	
-    	// --- CLEARS the GUI
+    	if(command.equals("width") && cmdLength == 1) {
+    		
+    		displayMessage("Please set a width");
+    		return;
+    	} else if(command.equals("width") && cmdLength > 1) {
+    		
+    		setStroke(value);
+    		validCommand = true;
+    		
+    		displayMessage("Turtle width set to "+posVal);
+    	}
+    	
+    	if(command.equals("speed") && cmdLength == 1) {
+    		
+    		displayMessage("Please set a speed");
+    		return;
+    	} else if(command.equals("speed") && cmdLength > 1) {
+    		
+    		setTurtleSpeed(value);
+    		displayMessage("Speed set to "+posVal);
+    		validCommand = true;
+    	}
     	
     	if(command.equals("clear")) {
     		
@@ -120,8 +179,6 @@ public class GraphicsSystem extends LBUGraphics {
     		displayMessage("GUI clears");
     	}
     	
-    	// --- RESETS the GUI
-    	
     	if(command.equals("reset")) {
     		
     		reset();
@@ -130,91 +187,89 @@ public class GraphicsSystem extends LBUGraphics {
     		displayMessage("Turtle resets to initial position");
     	}
     	
-    	// --- Turtle does the OOP dance :3
-    	
     	if(command.equals("about")) {
     		
     		about();
     		validCommand = true;
     		
-    		displayMessage("Turtle does cute dance :3");
+    		displayMessage("Turtle does the OOP dance");
     	}
     	
-    	// --- Change pen COLOUR
-    	
-    	if(command.equals("colour")) {
+    	if(command.equals("red")) {
     		
-    		if(inputtedArray[1].equals("red")) {
-    			
-    			setPenColour(Color.red);
-    			validCommand = true;
-        		
-    			displayMessage("Now using colour red");
-    		}
+    		setPenColour(Color.red);
+    		validCommand = true;
     		
-    		if(inputtedArray[1].equals("blue")) {
-    			
-    			setPenColour(Color.blue);
-    			validCommand = true;
-        		
-    			displayMessage("Now using colour blue");
-    		}
-    		
-    		if(inputtedArray[1].equals("green")) {
-    			
-    			setPenColour(Color.green);
-    			validCommand = true;
-        		
-    			displayMessage("Now using colour green");
-    		}
-    		
-    		if(inputtedArray[1].equals("yellow")) {
-    			
-    			setPenColour(Color.yellow);
-    			validCommand = true;
-        		
-    			displayMessage("Now using colour yellow");
-    		}
+    		displayMessage("Now using colour red");
     	}
     	
-    	// --- Brings the pen UP or DOWN
-    	
-    	if(command.equals("pen")) {
+    	if(command.equals("green")) {
     		
-    		if(inputtedArray[1].equals("down")) {
-    			
-    			penDown();
-    			validCommand = true;
-        		
-    			displayMessage("Turtle pen is pressed down");
-    		}
+    		setPenColour(Color.green);
+    		validCommand = true;
     		
-    		if(inputtedArray[1].equals("up")) {
-    			
-    			penUp();
-    			validCommand = true;
-				
-    			displayMessage("Turtle pen is up off the GUI");
-    		}
+    		displayMessage("Now using colour green");
     	}
     	
-    	// --- Turtle draws a SQUARE
+    	if(command.equals("black")) {
+    		
+    		setPenColour(Color.black);
+    		validCommand = true;
+    		
+    		displayMessage("Now using colour black");
+    	}
     	
+    	if(command.equals("white")) {
+    		
+    		setPenColour(Color.white);
+    		validCommand = true;
+    		
+    		displayMessage("Now using colour white");
+    	}
+    	
+    	if(command.equals("penup")) {
+    		
+    		penUp();
+    		validCommand = true;
+    		
+    		displayMessage("Turtle pen moves up off the GUI");
+    	}
+    	
+    	if(command.equals("pendown")) {
+    		
+    		penDown();
+    		validCommand = true;
+    		
+    		displayMessage("Turtle pen is pressed down");
+    	}
+
     	if(command.equals("square") && cmdLength == 1) {
     		
 			shapes.square(25);
 			validCommand = true;
     		
-			displayMessage("Turtle draws a square");
+			displayMessage("Missing parameter, Turtle draws a default square");
 		} else if(command.equals("square") && cmdLength > 1) {
 			
 			shapes.square(value);
 			validCommand = true;
     		
-			displayMessage("Turtle draws a square");
+			displayMessage("Turtle draws a square of "+posVal+" size");
 		}
     	
-    	// --- Turtle draws a TRIANGLE
+    	if(command.equals("circle") && cmdLength == 1) {
+    		
+    		circle(25);
+    		validCommand = true;
+    		
+    		displayMessage("Missing parameter, Turtle draws a default circle");
+    	} else if(command.equals("circle") && cmdLength > 1) {
+    		
+    		circle(value);
+    		validCommand = true;
+    		
+    		displayMessage("Turtle draws a circle of "+posVal+" size");
+    	}
     	
     	if(command.equals("triangle") && cmdLength == 1) {
     		
@@ -227,18 +282,30 @@ public class GraphicsSystem extends LBUGraphics {
     		shapes.triangle(value);
     		validCommand = true;
     		
-    		displayMessage("Turtle draws a triangle");
+    		displayMessage("Turtle draws a triangle of "+posVal+" size");
     	}
     	
-    	// --- Validates commands
-    	
+    	if(command.equals("save")) {
+    		 try {
+    			BufferedImage buffImg = getBufferedImage();
+    			File output = new File("LBU_Graphics_Image" + ".png");
+    			ImageIO.write(buffImg, "png", output);
+    			displayMessage("Image successfully saved");
+    			
+    			validCommand = true;
+    		} catch(IOException e) {
+    			displayMessage("Error whilst saving image");
+    			return;
+    		}
+    	} 
+  
     	if(validCommand == false) {
     		
     		displayMessage("Please enter a valid command");
     	}
     }	
     
-    class Shape{
+    public class Shape{
     	
     	public void square(int length) {
 			
